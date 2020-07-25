@@ -3,9 +3,9 @@
 // ======================
 
 // 1st: pull initial budgetItems/lastID from localStorage to set initial variables
-
-
-
+                    // Get item from ls OR (if ls key is null) create an empty array
+const budgetItems = JSON.parse(localStorage.getItem("budgetItems")) || [];
+const lastID = localStorage.getItem("lastID") || 0;
 // ======================
 // FUNCTIONS
 // ======================
@@ -24,10 +24,25 @@
 // ======================
 
 // 2nd: wire up click event on 'Enter New Budget Item' button to toggle display of form
-
+$("#toggleFormButton, #hideForm").click(function() {
+    $("#addItemForm").toggle("slow", function() {
+        $("#toggleFormButton").text($(this).is(":visible") ? "Hide Form" : "Add New Budget Item");
+    });
+});
 
 // 3rd: wire up click event on 'Add Budget Item' button, gather user input and add item to budgetItems array (each item's object should include: id / date / name / category / amount / notes)... then clear the form fields and trigger localStorage update/budgetItems rerender functions, once created
+$("#addItem").click(function(event) {
+    event.preventDefault();
 
+    const newItem = {
+        id: ++lastID,
+        date: moment().format("lll"),
+        name: $("#name").val().trim(),
+        category: $("#category").val().trim(),
+        amount: $("#amount").val().trim(),
+        notes: $("#notes").val().trim()
+    }
+});
 
 // 6th: wire up change event on the category select menu, show filtered budgetItems based on selection
 
