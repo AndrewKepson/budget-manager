@@ -9,9 +9,6 @@ let lastID = localStorage.getItem("lastID") || 0;
 // ======================
 // FUNCTIONS
 // ======================
-
-// 4th: function to update localStorage with latest budgetItems and latest lastID
-
 const updateStorage = () => {
     localStorage.setItem("budgetItems", JSON.stringify(budgetItems));
     localStorage.setItem("lastID", lastID);
@@ -21,8 +18,20 @@ const updateStorage = () => {
 // <tr data-id="2"><td>Oct 14, 2019 5:08 PM</td><td>November Rent</td><td>Rent/Mortgage</td><td>1300</td><td>Fill out lease renewal form!</td><td class="delete"><span>x</span></td></tr>
 // also, update total amount spent on page (based on selected category):
 
+const renderItems = (items) => {
 
+    if (!items) items = budgetItems;
+    const tbody = $("#budgetItems tbody");
+    tbody.empty();
 
+    let total = 0;
+
+    for (const { id, date, name, category, amount, notes } of items) {
+        tbody.append(`<tr data-id="${id}"><td>${date}</td><td>${name}</td><td>${category}</td><td>$${parseFloat(amount).toFixed(2)}</td><td>${notes}</td><td class="delete"><span>x</span></td></tr>`);
+        total += parseFloat(amount);
+    }
+    $("#total").text(`$${total}`)
+}
 // ======================
 // MAIN PROCESS
 // ======================
@@ -67,4 +76,4 @@ $("#addItem").click(function(event) {
 
 
 
-
+renderItems();
