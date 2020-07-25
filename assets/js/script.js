@@ -1,22 +1,10 @@
-// ======================
-// VARIABLES
-// ======================
-
-// 1st: pull initial budgetItems/lastID from localStorage to set initial variables
-                    // Get item from ls OR (if ls key is null) create an empty array
 let budgetItems = JSON.parse(localStorage.getItem("budgetItems")) || [];
 let lastID = localStorage.getItem("lastID") || 0;
-// ======================
-// FUNCTIONS
-// ======================
+
 const updateStorage = () => {
     localStorage.setItem("budgetItems", JSON.stringify(budgetItems));
     localStorage.setItem("lastID", lastID);
 }
-
-// 5th: function to render budgetItems on table; each item should be rendered in this format:
-// <tr data-id="2"><td>Oct 14, 2019 5:08 PM</td><td>November Rent</td><td>Rent/Mortgage</td><td>1300</td><td>Fill out lease renewal form!</td><td class="delete"><span>x</span></td></tr>
-// also, update total amount spent on page (based on selected category):
 
 const renderItems = (items) => {
 
@@ -32,9 +20,6 @@ const renderItems = (items) => {
     }
     $("#total").text(`$${total}`)
 }
-// ======================
-// MAIN PROCESS
-// ======================
 
 $("#toggleFormButton, #hideForm").click(function() {
     $("#addItemForm").toggle("slow", function() {
@@ -64,16 +49,25 @@ $("#addItem").click(function(event) {
 
     $("input, select").val("");
 
-
 });
 
-// 6th: wire up change event on the category select menu, show filtered budgetItems based on selection
+$("#categoryFilter").change(function() {
+    const category = $(this).val();
 
+    if (category) {
+    const filteredItems = budgetItems.filter(item => category === item.category);
+    renderItems(filteredItems);
+    } else {
+        renderItems();
+    }
+});
 
-// 7th: wire up click event on the delete button of a given row; on click delete that budgetItem
-
-
-
-
+$("#budgetItems").on("click", ".delete", function() {
+    const id = $(this).parents("tr").data("id");
+    const remainingItems = budgetItems.filter(item => item.id !== id);
+    budgetItems = remainingItems;
+    updateStorage();
+    renderItems();
+})
 
 renderItems();
